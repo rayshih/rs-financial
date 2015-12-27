@@ -6,3 +6,4 @@ My own financial tool
 - 2015-12-27
   - init project, setup git
   - setup webpack
+  - setup babelrc
