@@ -9,6 +9,9 @@ My own financial tool
 
 ## History
 
+- 2015-12-20
+  - setup hot module replacement
+
 - 2015-12-28
   - setup babel for react and es7
   - install cycle react
