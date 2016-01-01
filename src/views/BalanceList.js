@@ -4,7 +4,7 @@ import {toDate} from '../utils';
 
 export default component('BalanceList', (interactions, props) => {
 
-  return props.get('data').map(data => {
+  return props.get('data').map(d => d.rent).map(data => {
 
     const rows = data.map(({date, amount}, i) => {
       return (

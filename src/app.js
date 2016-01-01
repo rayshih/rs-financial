@@ -15,7 +15,7 @@ const App = component('App', () => {
   const to = moment().add(3, 'months');
 
   const data = Immutable.fromJS(rawData);
-  const result = predictor(data.get('configs'), from, to);
+  const result = predictor(data, from, to);
 
   return Observable.just(
     <div>
