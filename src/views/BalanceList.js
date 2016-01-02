@@ -10,16 +10,23 @@ export default component('BalanceList', (interactions, props) => {
     props.get('data'),
     (accounts, data) => {
 
-      const rows = data.rent.map(({date, amount}, i) => {
-        return (
-          <tr key={i}>
-            <td>{toDate(date)}</td>
-            <td>{amount}</td>
-          </tr>
-        );
-      });
+      const date = data.get(accounts.first()).map(r => r.get('date'));
+      const amountsInList = accounts.unshift('sum').map(a => (
+        data.get(a).map(r => r.get('amount'))));
 
-      const headers = accounts.unshift('Date').
+      const rows = date.zip(...amountsInList).
+        map(([date, ...amounts], i) => {
+          const amountEs = amounts.map((a, j) => <td key={j}>{a}</td>);
+
+          return (
+            <tr key={i}>
+              <td>{toDate(date)}</td>
+              {amountEs}
+            </tr>
+          );
+        });
+
+      const headers = accounts.unshift('sum').unshift('Date').
         map((name, i) => <th key={i}>{name}</th>);
 
       return (

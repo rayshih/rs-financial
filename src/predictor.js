@@ -1,4 +1,5 @@
 import moment from 'moment';
+import Immutable from 'immutable';
 import {toDate} from './utils';
 
 /**
@@ -13,6 +14,7 @@ export default (data, from, to) => {
   accounts.forEach(a => {
     result[a] = [];
   });
+  result.sum = [];
 
   let cAmounts = {};
   accounts.forEach(a => {
@@ -20,6 +22,7 @@ export default (data, from, to) => {
   });
 
   let cDate = from;
+  let count = 0;
   while (cDate < to) {
 
     const daysInMonth = cDate.clone().add(1, 'month').date(0).date();
@@ -45,10 +48,18 @@ export default (data, from, to) => {
     });
 
     // TODO
-    // result.sum = accounts.map(a => result[a]);
+    const sum = accounts.
+      map(a => result[a][count].amount).
+      reduce((s, a) => s + a);
+
+    result.sum.push({
+      date: cDate,
+      amount: sum
+    });
 
     cDate = cDate.clone().add(1, 'day');
+    count++;
   }
 
-  return result;
+  return Immutable.fromJS(result);
 };

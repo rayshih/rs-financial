@@ -7,7 +7,7 @@ import moment from 'moment';
 import BalanceList from './views/BalanceList';
 import {toDate} from './utils';
 import predictor from './predictor';
-import Immutable from 'Immutable';
+import Immutable from 'immutable';
 
 const App = component('App', () => {
 
