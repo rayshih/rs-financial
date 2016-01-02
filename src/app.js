@@ -10,11 +10,11 @@ import predictor from './predictor';
 import Immutable from 'immutable';
 
 const App = component('App', () => {
-
-  const from = moment();
-  const to = moment().add(3, 'months');
-
   const data = Immutable.fromJS(rawData);
+
+  const from = data.get('startDate');
+  const to = from.clone().add(3, 'months');
+
   const result = predictor(data, from, to);
 
   const accounts = data.get('accounts').keySeq().toList();

@@ -30,7 +30,7 @@ export default (data, from, to) => {
 
     const matchDay = c => {
       const day = (c.get('periodOffset') + daysInMonth) % daysInMonth;
-      return day === cDayInMonth;
+      return day === cDayInMonth - 1;
     };
 
     configs.forEach(c => {
