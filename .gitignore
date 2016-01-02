@@ -1,6 +1,7 @@
 *.swp
 bundle.js
 node_modules
+.DS_STORE
 
 # for my own privarcy
 src/data.js

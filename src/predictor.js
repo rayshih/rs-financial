@@ -9,6 +9,7 @@ export default (data, from, to) => {
 
   const accounts = data.get('accounts').keySeq();
   const configs = data.get('configs');
+  const observations = data.get('observations');
 
   const result = {};
   accounts.forEach(a => {
@@ -18,7 +19,13 @@ export default (data, from, to) => {
 
   let cAmounts = {};
   accounts.forEach(a => {
-    cAmounts[a] = 0;
+    const obs = observations.filter(o => o.get('account') === a);
+
+    if (obs.isEmpty()) {
+      cAmounts[a] = 0;
+    } else {
+      cAmounts[a] = obs.sortBy(a => a.date).last().get('amount');
+    }
   });
 
   let cDate = from;
