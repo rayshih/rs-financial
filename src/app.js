@@ -17,12 +17,14 @@ const App = component('App', () => {
   const data = Immutable.fromJS(rawData);
   const result = predictor(data, from, to);
 
+  const accounts = data.get('accounts').keySeq().toList();
+
   return Observable.just(
     <div>
       <h1>RS financial</h1>
       <p>from: {toDate(from)}</p>
       <p>to: {toDate(to)}</p>
-      <BalanceList data={result} />
+      <BalanceList accounts={accounts} data={result} />
     </div>
   );
 });

@@ -1,6 +1,9 @@
 import moment from 'moment';
 import {toDate} from './utils';
 
+/**
+ * @return result {[account]: [{amount, date}]}
+ */
 export default (data, from, to) => {
 
   const accounts = data.get('accounts').keySeq();
