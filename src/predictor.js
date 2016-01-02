@@ -2,13 +2,22 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import {toDate} from './utils';
 
+import {PeriodType} from './data';
+
 /**
  * @return result {[account]: [{amount, date}]}
  */
 export default (data, from, to) => {
 
   const accounts = data.get('accounts').keySeq();
+
   const configs = data.get('configs');
+  const configsByPeriod = (type) => configs.
+    filter(a => a.get('period') === type);
+
+  const monthlyConfigs = configsByPeriod(PeriodType.Monthly);
+  const dailyConfigs = configsByPeriod(PeriodType.Daily);
+
   const observations = data.get('observations');
 
   const result = {};
@@ -40,13 +49,24 @@ export default (data, from, to) => {
       return day === cDayInMonth - 1;
     };
 
-    configs.forEach(c => {
+    monthlyConfigs.forEach(c => {
       const account = c.get('account');
 
       if (matchDay(c)) {
         const amount = c.get('amount');
         cAmounts[account] += amount;
       }
+
+      result[account].push({
+        date: cDate,
+        amount: cAmounts[account]
+      });
+    });
+
+    dailyConfigs.forEach(c => {
+      const account = c.get('account');
+      const amount = c.get('amount');
+      cAmounts[account] += amount;
 
       result[account].push({
         date: cDate,
