@@ -2,6 +2,7 @@ import {component} from 'cycle-react';
 import React from 'react';
 import {toDate} from '../utils';
 import {Observable} from 'rx';
+import {Table} from 'react-bootstrap';
 
 export default component('BalanceList', (interactions, props) => {
 
@@ -30,7 +31,7 @@ export default component('BalanceList', (interactions, props) => {
         map((name, i) => <th key={i}>{name}</th>);
 
       return (
-        <table>
+        <Table striped bordered condensed hover>
           <thead>
             <tr>
               {headers}
@@ -39,7 +40,7 @@ export default component('BalanceList', (interactions, props) => {
           <tbody>
             {rows}
           </tbody>
-        </table>
+        </Table>
       );
 
     }
