@@ -1,3 +1,4 @@
+import './css/bootstrap.min.css';
 import {component} from 'cycle-react';
 import React from 'react';
 import ReactDOM from 'react-dom';

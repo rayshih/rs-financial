@@ -12,6 +12,9 @@ module.exports = {
     }, {
       test: /\.css$/,
       loader: "style!css"
+    }, {
+      test: /\.(eot|woff2?|ttf|svg)$/,
+      loader: "file-loader"
     }]
   }
 };
