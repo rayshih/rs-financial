@@ -10,6 +10,11 @@ import {toDate} from './utils';
 import predictor from './predictor';
 import Immutable from 'immutable';
 
+import {
+  Grid,
+  Navbar
+} from 'react-bootstrap';
+
 const App = component('App', () => {
   const data = Immutable.fromJS(rawData);
 
@@ -20,12 +25,23 @@ const App = component('App', () => {
 
   const accounts = data.get('accounts').keySeq().toList();
 
+  const {Header, Brand, Toggle, Collapse} = Navbar
+
   return Observable.just(
     <div>
-      <h1>RS financial</h1>
-      <p>from: {toDate(from)}</p>
-      <p>to: {toDate(to)}</p>
-      <BalanceList accounts={accounts} data={result} />
+
+      <Navbar>
+        <Header>
+          <Brand>RS financial</Brand>
+        </Header>
+      </Navbar>
+
+      <Grid>
+        <p>from: {toDate(from)}</p>
+        <p>to: {toDate(to)}</p>
+        <BalanceList accounts={accounts} data={result} />
+      </Grid>
+
     </div>
   );
 });
