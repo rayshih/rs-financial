@@ -64,7 +64,7 @@ export default (data, from, to) => {
         forEach(c => {
           const match =
             isPeriodType(c, PeriodType.Monthly) && matchDay(c) ||
-            isPeriodType(c, PeriodType.Daily)
+            isPeriodType(c, PeriodType.Daily);
 
           if (match) diff += c.get('amount');
         });
