@@ -4,38 +4,45 @@ import {toDate} from './utils';
 
 import {PeriodType} from './data';
 
+const prepareResult = (accounts) => {
+  return accounts.reduce((r, a) => {
+    r[a] = [];
+    return r;
+  }, {sum: []});
+};
+
+// TODO: use the last one before start date
+const prepareInitAmount = (accounts, observations) => {
+
+  return accounts.reduce((r, a) => {
+    const ob = observations.
+      filter(o => o.get('account') === a).
+      sortBy(a => a.date).
+      last();
+
+    if (ob) {
+      r[a] = ob.get('amount');
+    } else {
+      r[a] = 0;
+    }
+
+    return r;
+  }, {});
+};
+
 /**
  * @return result {[account]: [{amount, date}]}
  */
 export default (data, from, to) => {
 
   const accounts = data.get('accounts').keySeq();
-
-  const configs = data.get('configs');
-  const configsByPeriod = (type) => configs.
-    filter(a => a.get('period') === type);
-
-  const monthlyConfigs = configsByPeriod(PeriodType.Monthly);
-  const dailyConfigs = configsByPeriod(PeriodType.Daily);
-
   const observations = data.get('observations');
+  const configs = data.get('configs');
 
-  const result = {};
-  accounts.forEach(a => {
-    result[a] = [];
-  });
-  result.sum = [];
+  const isPeriodType = (c, type) => c.get('period') === type;
 
-  let cAmounts = {};
-  accounts.forEach(a => {
-    const obs = observations.filter(o => o.get('account') === a);
-
-    if (obs.isEmpty()) {
-      cAmounts[a] = 0;
-    } else {
-      cAmounts[a] = obs.sortBy(a => a.date).last().get('amount');
-    }
-  });
+  const result = prepareResult(accounts);
+  const initAmount = prepareInitAmount(accounts, observations);
 
   let cDate = from;
   let count = 0;
@@ -49,32 +56,29 @@ export default (data, from, to) => {
       return day === cDayInMonth - 1;
     };
 
-    monthlyConfigs.forEach(c => {
-      const account = c.get('account');
+    accounts.forEach(a => {
+      let diff = 0;
 
-      if (matchDay(c)) {
-        const amount = c.get('amount');
-        cAmounts[account] += amount;
-      }
+      configs.
+        filter(c => c.get('account') === a).
+        forEach(c => {
+          const match =
+            isPeriodType(c, PeriodType.Monthly) && matchDay(c) ||
+            isPeriodType(c, PeriodType.Daily)
 
-      result[account].push({
+          if (match) diff += c.get('amount');
+        });
+
+      const last = count - 1 >= 0 ?
+        result[a][count - 1].amount :
+        initAmount[a];
+
+      result[a].push({
         date: cDate,
-        amount: cAmounts[account]
+        amount: last + diff
       });
     });
 
-    dailyConfigs.forEach(c => {
-      const account = c.get('account');
-      const amount = c.get('amount');
-      cAmounts[account] += amount;
-
-      result[account].push({
-        date: cDate,
-        amount: cAmounts[account]
-      });
-    });
-
-    // TODO
     const sum = accounts.
       map(a => result[a][count].amount).
       reduce((s, a) => s + a);
