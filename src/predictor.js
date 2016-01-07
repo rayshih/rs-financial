@@ -2,7 +2,10 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import {toDate} from './utils';
 
-import {PeriodType} from './data';
+import {
+  ConfigType,
+  PeriodType
+} from './data';
 
 const prepareResult = (accounts) => {
   return accounts.reduce((r, a) => {
@@ -39,7 +42,9 @@ export default (data, from, to) => {
   const observations = data.get('observations');
   const configs = data.get('configs');
 
-  const isPeriodType = (c, type) => c.get('period') === type;
+  const checkPeriodType = (c, type) =>
+    c.get('type') === ConfigType.Periodically &&
+    c.get('period') === type;
 
   const result = prepareResult(accounts);
   const initAmount = prepareInitAmount(accounts, observations);
@@ -51,7 +56,11 @@ export default (data, from, to) => {
     const daysInMonth = cDate.clone().add(1, 'month').date(0).date();
     const cDayInMonth = cDate.date();
 
-    const matchDay = c => {
+    const checkFixDate = c =>
+      c.get('type') === ConfigType.FixDate &&
+      c.get('date').diff(cDate, 'days') === 0;
+
+    const matchMonthlyDay = c => {
       const day = (c.get('periodOffset') + daysInMonth) % daysInMonth;
       return day === cDayInMonth - 1;
     };
@@ -63,8 +72,9 @@ export default (data, from, to) => {
         filter(c => c.get('account') === a).
         forEach(c => {
           const match =
-            isPeriodType(c, PeriodType.Monthly) && matchDay(c) ||
-            isPeriodType(c, PeriodType.Daily);
+            checkFixDate(c) ||
+            checkPeriodType(c, PeriodType.Monthly) && matchMonthlyDay(c) ||
+            checkPeriodType(c, PeriodType.Daily);
 
           if (match) diff += c.get('amount');
         });
