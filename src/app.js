@@ -23,7 +23,7 @@ const App = component('App', () => {
 
   const result = predictor(data, from, to);
 
-  const accounts = data.get('accounts').keySeq().toList();
+  const accounts = data.get('accounts');
 
   const {Header, Brand, Toggle, Collapse} = Navbar
 

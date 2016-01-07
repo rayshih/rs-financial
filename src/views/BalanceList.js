@@ -11,8 +11,12 @@ export default component('BalanceList', (interactions, props) => {
     props.get('data'),
     (accounts, data) => {
 
-      const date = data.get(accounts.first()).map(r => r.get('date'));
-      const amountsInList = accounts.unshift('sum').map(a => (
+      const accountNames = accounts.keySeq().toList();
+
+      const date = data.get(accountNames.first()).map(r => r.get('date'));
+
+      const metaAccount = ['sum', 'cash'];
+      const amountsInList = accountNames.unshift(...metaAccount).map(a => (
         data.get(a).map(r => r.get('amount'))));
 
       const rows = date.zip(...amountsInList).
@@ -27,8 +31,15 @@ export default component('BalanceList', (interactions, props) => {
           );
         });
 
-      const headers = accounts.unshift('sum').unshift('Date').
-        map((name, i) => <th key={i}>{name}</th>);
+      const headers = accountNames.unshift(...metaAccount).unshift('Date').
+        map((name, i) => {
+          const a = accounts.get(name);
+          if (a && a.get('isAmortized')) {
+            return <th key={i}>{name}(am)</th>;
+          }
+
+          return <th key={i}>{name}</th>;
+        });
 
       return (
         <Table striped bordered condensed hover>

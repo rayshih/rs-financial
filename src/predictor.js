@@ -11,7 +11,10 @@ const prepareResult = (accounts) => {
   return accounts.reduce((r, a) => {
     r[a] = [];
     return r;
-  }, {sum: []});
+  }, {
+    sum: [],
+    cash: []
+  });
 };
 
 // TODO: use the last one before start date
@@ -38,7 +41,8 @@ const prepareInitAmount = (accounts, observations) => {
  */
 export default (data, from, to) => {
 
-  const accounts = data.get('accounts').keySeq();
+  const accountMap = data.get('accounts');
+  const accounts = accountMap.keySeq();
   const observations = data.get('observations');
   const configs = data.get('configs');
 
@@ -96,6 +100,16 @@ export default (data, from, to) => {
     result.sum.push({
       date: cDate,
       amount: sum
+    });
+
+    const cash = accounts.
+      filter(a => !accountMap.getIn([a, 'isAmortized'])).
+      map(a => result[a][count].amount).
+      reduce((s, a) => s + a);
+
+    result.cash.push({
+      date: cDate,
+      amount: cash
     });
 
     cDate = cDate.clone().add(1, 'day');
