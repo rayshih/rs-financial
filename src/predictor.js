@@ -36,6 +36,17 @@ const prepareInitAmount = (accounts, observations) => {
   }, {});
 };
 
+const buildConfigFromTransfer = (transfer) => {
+  const from = transfer.
+    set('account', transfer.get('from')).
+    set('amount', -transfer.get('amount'));
+
+  const to = transfer.
+    set('account', transfer.get('to'));
+
+  return Immutable.List.of(from, to);
+};
+
 /**
  * @return result {[account]: [{amount, date}]}
  */
@@ -44,7 +55,9 @@ export default (data, from, to) => {
   const accountMap = data.get('accounts');
   const accounts = accountMap.keySeq();
   const observations = data.get('observations');
-  const configs = data.get('configs');
+  const transfers = data.get('transfers');
+  const configs = data.get('configs').
+    concat(transfers.map(buildConfigFromTransfer).flatten(1));
 
   const checkPeriodType = (c, type) =>
     c.get('type') === ConfigType.Periodically &&
@@ -65,6 +78,9 @@ export default (data, from, to) => {
       c.get('date').diff(cDate, 'days') === 0;
 
     const matchMonthlyDay = c => {
+      const periodStart = c.get('periodStart');
+      if (periodStart && cDate < periodStart) return false;
+
       const periodEnd = c.get('periodEnd');
       if (periodEnd && cDate > periodEnd) return false;
 
