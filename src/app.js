@@ -19,13 +19,13 @@ const App = component('App', () => {
   const data = Immutable.fromJS(rawData);
 
   const from = data.get('startDate');
-  const to = from.clone().add(3, 'months');
+  const to = from.clone().add(6, 'months');
 
   const result = predictor(data, from, to);
 
   const accounts = data.get('accounts');
 
-  const {Header, Brand, Toggle, Collapse} = Navbar
+  const {Header, Brand, Toggle, Collapse} = Navbar;
 
   return Observable.just(
     <div>

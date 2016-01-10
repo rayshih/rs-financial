@@ -65,6 +65,9 @@ export default (data, from, to) => {
       c.get('date').diff(cDate, 'days') === 0;
 
     const matchMonthlyDay = c => {
+      const periodEnd = c.get('periodEnd');
+      if (periodEnd && cDate > periodEnd) return false;
+
       const day = (c.get('periodOffset') + daysInMonth) % daysInMonth;
       return day === cDayInMonth - 1;
     };

@@ -21,7 +21,18 @@ export default component('BalanceList', (interactions, props) => {
 
       const rows = date.zip(...amountsInList).
         map(([date, ...amounts], i) => {
-          const amountEs = amounts.map((a, j) => <td key={j}>{a}</td>);
+          const amountEs = amounts.map((a, j) => {
+            const warning = {color: 'GoldenRod'};
+            const alert = {color: 'Red'};
+
+            let style = null;
+            if (j < metaAccount.length) {
+              if (a < 10000 && a >= 5000) style = warning;
+              if (a < 5000) style = alert;
+            }
+
+            return <td key={j} style={style}>{a}</td>;
+          });
 
           return (
             <tr key={i}>
