@@ -82,7 +82,7 @@ export default (data, from, to) => {
       if (periodStart && cDate < periodStart) return false;
 
       const periodEnd = c.get('periodEnd');
-      if (periodEnd && cDate > periodEnd) return false;
+      if (periodEnd && cDate >= periodEnd) return false;
 
       const day = (c.get('periodOffset') + daysInMonth) % daysInMonth;
       return day === cDayInMonth - 1;
