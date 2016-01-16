@@ -10,6 +10,8 @@ import {toDate} from './utils';
 import predictor from './predictor';
 import Immutable from 'immutable';
 
+import LineChart from './views/LineChart';
+
 import {
   Grid,
   Navbar
@@ -39,6 +41,9 @@ const App = component('App', () => {
       <Grid>
         <p>from: {toDate(from)}</p>
         <p>to: {toDate(to)}</p>
+
+        <LineChart data={result} />
+
         <BalanceList accounts={accounts} data={result} />
       </Grid>
 
