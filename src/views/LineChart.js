@@ -21,7 +21,8 @@ export default component('LineChart', (interactions, props) => {
     const sampledCash = data.get('cash').filter(weekly);
     const sampledSum = data.get('sum').filter(weekly);
 
-    console.log(sampledCash.toJS());
+    const sampledCashWithO = data.get('cash+o').filter(weekly);
+    const sampledSumWithO = data.get('sum+o').filter(weekly);
 
     const chartData = {
       labels: sampledCash.map(d => d.get('date').format('YYYY-MM-DD')).toJS(),
@@ -46,6 +47,28 @@ export default component('LineChart', (interactions, props) => {
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
           data: sampledCash.map(d => d.get('amount')).toJS()
+        },
+
+        {
+          label: "Sum+O",
+          fillColor: 'rgba(0, 0, 0, 0)',
+          strokeColor: 'Pink',
+          pointColor: 'Pink',
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke:  'Pink',
+          data: sampledSumWithO.map(d => d.get('amount')).toJS()
+        },
+
+        {
+          label: "Cash+O",
+          fillColor: 'rgba(0, 0, 0, 0)',
+          strokeColor: 'Orange',
+          pointColor: 'Orange',
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: 'Orange',
+          data: sampledCashWithO.map(d => d.get('amount')).toJS()
         },
 
         {

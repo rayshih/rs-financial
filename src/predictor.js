@@ -10,10 +10,13 @@ import {
 const prepareResult = (accounts) => {
   return accounts.reduce((r, a) => {
     r[a] = [];
+    r[a + '+o'] = [];
     return r;
   }, {
     sum: [],
-    cash: []
+    'sum+o': [],
+    cash: [],
+    'cash+o': []
   });
 };
 
@@ -26,11 +29,8 @@ const prepareInitAmount = (accounts, startDate, observations) => {
       sortBy(a => a.date).
       last();
 
-    if (ob) {
-      r[a] = ob.get('amount');
-    } else {
-      r[a] = 0;
-    }
+    const amount = ob ? ob.get('amount'): 0;
+    r[a + '+o'] = r[a] = amount;
 
     return r;
   }, {});
@@ -39,7 +39,7 @@ const prepareInitAmount = (accounts, startDate, observations) => {
 const buildConfigFromTransfer = (transfer) => {
   const from = transfer.
     set('account', transfer.get('from')).
-    set('amount', -transfer.get('amount'));
+    set('amount', - transfer.get('amount'));
 
   const to = transfer.
     set('account', transfer.get('to'));
@@ -102,14 +102,34 @@ export default (data, from, to) => {
           if (match) diff += c.get('amount');
         });
 
+      // TODO refactor
       const last = count - 1 >= 0 ?
         result[a][count - 1].amount :
         initAmount[a];
 
-      result[a].push({
+      const r = {
         date: cDate,
         amount: last + diff
+      };
+
+      result[a].push(r);
+
+      const obs = observations.find(o => {
+        return o.get('account') === a && o.get('date').isSame(cDate);
       });
+
+      const lastWithO = obs ? obs.get('amount') : (
+        count - 1 >= 0 ?
+          result[a + '+o'][count - 1].amount :
+          initAmount[a + '+o']
+      );
+
+      const rWithO = {
+        date: cDate,
+        amount: lastWithO + diff
+      };
+
+      result[a + '+o'].push(rWithO);
     });
 
     const sum = accounts.
@@ -129,6 +149,25 @@ export default (data, from, to) => {
     result.cash.push({
       date: cDate,
       amount: cash
+    });
+
+    const sumWithO = accounts.
+      map(a => result[a + '+o'][count].amount).
+      reduce((s, a) => s + a);
+
+    result['sum+o'].push({
+      date: cDate,
+      amount: sumWithO
+    });
+
+    const cashWithO = accounts.
+      filter(a => !accountMap.getIn([a, 'isAmortized'])).
+      map(a => result[a + '+o'][count].amount).
+      reduce((s, a) => s + a);
+
+    result['cash+o'].push({
+      date: cDate,
+      amount: cashWithO
     });
 
     cDate = cDate.clone().add(1, 'day');

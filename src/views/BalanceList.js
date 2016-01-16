@@ -17,7 +17,7 @@ export default component('BalanceList', (interactions, props) => {
 
       const metaAccount = ['sum', 'cash'];
       const amountsInList = accountNames.unshift(...metaAccount).map(a => (
-        data.get(a).map(r => r.get('amount'))));
+        data.get(a + '+o').map(r => r.get('amount'))));
 
       const rows = date.zip(...amountsInList).
         map(([date, ...amounts], i) => {
