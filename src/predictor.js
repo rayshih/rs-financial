@@ -17,12 +17,12 @@ const prepareResult = (accounts) => {
   });
 };
 
-// TODO: use the last one before start date
-const prepareInitAmount = (accounts, observations) => {
+const prepareInitAmount = (accounts, startDate, observations) => {
 
   return accounts.reduce((r, a) => {
     const ob = observations.
       filter(o => o.get('account') === a).
+      filter(o => o.get('date') <= startDate).
       sortBy(a => a.date).
       last();
 
@@ -64,7 +64,7 @@ export default (data, from, to) => {
     c.get('period') === type;
 
   const result = prepareResult(accounts);
-  const initAmount = prepareInitAmount(accounts, observations);
+  const initAmount = prepareInitAmount(accounts, from, observations);
 
   let cDate = from;
   let count = 0;
