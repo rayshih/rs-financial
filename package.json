@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "webpack-dev-server --devtool cheap-module-eval-source-map --progress --colors --inline --hot",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "watch-test": "mocha --compilers js:babel-register --watch"
   },
   "author": "Ray Shih (mnf.shih@gmail.com)",
   "license": "MIT",
