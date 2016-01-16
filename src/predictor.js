@@ -7,7 +7,7 @@ import {
   PeriodType
 } from './data';
 
-const prepareResult = (accounts) => {
+export const prepareResult = (accounts) => {
   return accounts.reduce((r, a) => {
     r[a] = [];
     r[a + '+o'] = [];
