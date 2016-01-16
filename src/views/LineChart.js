@@ -46,6 +46,17 @@ export default component('LineChart', (interactions, props) => {
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
           data: sampledCash.map(d => d.get('amount')).toJS()
+        },
+
+        {
+          label: "Zero Line",
+          fillColor: 'rgba(0, 0, 0, 0)',
+          strokeColor: 'red',
+          pointColor: 'red',
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: 'red',
+          data: sampledCash.map(d => 0).toJS()
         }
       ]
     };
@@ -59,5 +70,5 @@ export default component('LineChart', (interactions, props) => {
         width="1100"
         height="250"/>
     );
-  })
+  });
 });

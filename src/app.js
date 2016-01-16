@@ -21,7 +21,7 @@ const App = component('App', () => {
   const data = Immutable.fromJS(rawData);
 
   const from = data.get('startDate');
-  const to = from.clone().add(6, 'months');
+  const to = from.clone().add(12, 'months');
 
   const result = predictor(data, from, to);
 
