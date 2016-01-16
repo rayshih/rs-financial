@@ -26,7 +26,12 @@ export default component('BalanceList', (interactions, props) => {
             const alert = {color: 'Red'};
 
             let style = null;
-            if (j < metaAccount.length) {
+            if (j < metaAccount.length ||
+                !accounts.getIn([
+                  accountNames.get(j - metaAccount.length),
+                  'isAmortized'
+                ])) {
+
               if (a < 10000 && a >= 5000) style = warning;
               if (a < 5000) style = alert;
             }
